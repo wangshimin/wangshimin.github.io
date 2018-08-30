@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="今天使用GitHub Desktop在克隆项目出现报错：12Cloning into &amp;apos;D:\WWW\test\wangshimin.github.io&amp;apos;...fatal: unable to access &amp;apos;https://github.com/test/test.github.io.git/&amp;apos;: schannel: failed to open CA f">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-30T06:31:46.723Z">
+<meta property="og:updated_time" content="2018-08-30T07:03:49.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GitHub Desktop 克隆项目到本地报错解决办法">
 <meta name="twitter:description" content="今天使用GitHub Desktop在克隆项目出现报错：12Cloning into &amp;apos;D:\WWW\test\wangshimin.github.io&amp;apos;...fatal: unable to access &amp;apos;https://github.com/test/test.github.io.git/&amp;apos;: schannel: failed to open CA f">
@@ -60,7 +60,9 @@
 			
 				<li><a href="/">主页</a></li>
 	        
-				<li><a href="/tags/随笔/">随笔</a></li>
+				<li><a href="/categories/随笔/">随笔</a></li>
+	        
+				<li><a href="/about">About</a></li>
 	        
 			</ul>
 		</nav>
@@ -118,6 +120,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -135,12 +139,14 @@
 			</nav>
 
 			<nav class="header-menu js-header-menu">
-				<ul style="width: 50%">
+				<ul style="width: 70%">
 				
 				
-					<li style="width: 50%"><a href="/">主页</a></li>
+					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
 		        
-					<li style="width: 50%"><a href="/tags/随笔/">随笔</a></li>
+					<li style="width: 33.333333333333336%"><a href="/categories/随笔/">随笔</a></li>
+		        
+					<li style="width: 33.333333333333336%"><a href="/about">About</a></li>
 		        
 				</ul>
 			</nav>
@@ -179,10 +185,11 @@
 <p>解决步骤：  </p>
 <ol>
 <li>打开C:\ProgramData\Git\config文件</li>
-<li>修改sslCAinfo  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sslCAinfo = /bin/curl-ca-bundle.crt</span><br><span class="line">``` </span><br><span class="line">修改为</span><br></pre></td></tr></table></figure>
+<li>修改sslCAinfo  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sslCAinfo = /bin/curl-ca-bundle.crt</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<p>C:/Program Files (x86)/Git/mingw64/ssl/certs/ca-bundle.crt<br><code>`</code></p>
+<p>修改为 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:/Program Files (x86)/Git/mingw64/ssl/certs/ca-bundle.crt</span><br></pre></td></tr></table></figure>
 <ol start="3">
 <li>最后保存即可</li>
 </ol>
@@ -236,7 +243,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/日记//" class="article-tag-list-link color3">日记</a>
+        			<a href="/categories/随笔//" class="article-tag-list-link color3">随笔</a>
         		</li>
       		
 		</ul>
