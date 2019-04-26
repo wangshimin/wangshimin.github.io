@@ -168,6 +168,118 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-laravel使用迁移创建指定表、数据库升级" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/26/laravel使用迁移创建指定表、数据库升级/">laravel使用迁移创建指定表、数据库升级</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/26/laravel使用迁移创建指定表、数据库升级/" class="archive-article-date">
+  	<time datetime="2019-04-26T02:06:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><p>在我们实际开发中，经常会由于业务需要增加新的数据表，通常会通过laravel的迁移功能。假设我们此次要生成一个新表user_profiles，执行 <code>php artisan migrate</code> ，可能会遇到如下情况，提示说xx表已存在<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PDOException::(&quot;SQLSTATE[42S01]: Base table or view already exists: 1050 Table &apos;users&apos; already exists&quot;)</span><br></pre></td></tr></table></figure></p>
+<h2 id="疑惑-amp-解读"><a href="#疑惑-amp-解读" class="headerlink" title="疑惑&amp;解读"></a>疑惑&amp;解读</h2><p> 纳尼？我要生成的又不是这个表，这个表也确实早就存在了，为什么会这么提示？  </p>
+<blockquote>
+<p>当我们迁移数据库时，系统获取所有数据库迁移文件（包括 database/migrations 目录下和扩展包中注册的），然后按照文件名中包含的日期时间排序，从最早的迁移文件开始，依次执行每个迁移类中的 up 方法，最后完成数据库迁移     </p>
+</blockquote>
+<p>再简单一点说就是：在运行迁移命令 <code>php artisan migrate</code> 时，实际上是把database/migrations 目录下所有文件重新执行了一遍。</p>
+<p>官网手册提供的方法就是删除所有表重新完成迁移，oh my god! 内心在抗拒好不好？！那怎么办呢？一顿搜索后，发现migrate命令可以指定目录，so ？  do it !</p>
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><blockquote>
+<ol>
+<li>在 <code>database/migrations</code> 目录下创建一个新的目录，如 news </li>
+<li>把这次要迁移的文件移到news目录下</li>
+<li>运行 <code>make:migrate</code>命令时添加 <code>--path=PATH目录</code>选项  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan migrate path=/database/migrations/news</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这时会发现数据表新建成功了，到这里我们该知道，<strong>实际开发的时候要注意这些</strong></p>
+<ol>
+<li>==每次数据库的变更== (如：增加删减字段、字段属性修改、新增删除表)==看成是一个新的版本，应当建立相应的迁移文件==</li>
+<li>==创建迁移文件时应使用–path选项指定路径==（以版本号区分，便于回退至上版本，如v1、v1.1、v2、v3…等），如<br><code>php artisan migrate:make user_profiles --path=/database/migrations/v2</code></li>
+<li>==迁移文件中的down方法记得完善，保证回滚迁移后再次执行迁移不会出错==</li>
+<li><p>==删除表可使用drop或dropIfExists方法==   </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">php artisan tinker </span><br><span class="line"></span><br><span class="line">Schema::drop(&apos;user_profiles&apos;) 或 Schema::dropIfExists(&apos;user_profiles&apos;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>没使用迁移命令删除表，使用了其他sql删除该表， 再执行迁移只会返回<code>Nothing to migrate.</code>这说明已经成功的迁移并不会重复执行，执行<code>Schema::drop(&#39;user_profiles&#39;)</code>返回的是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Illuminate/Database/QueryException with message &apos;SQLSTATE[42S02]: Base table or view not found: 1051 Unknown table &apos;user_profiles&apos; (SQL: drop table `user_profiles`)&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>怎么办呢？如果你足够细心的话，会知道自己数据库在使用迁移命令后，会加入一个名为migrations的新表，这个表存的是已经执行过的迁移文件名，所以找到相应的记录删掉就行啦！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">laravel</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/PHP//" class="article-tag-list-link color4">PHP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/26/laravel使用迁移创建指定表、数据库升级/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-laravel执行迁移命令migration引发1071的错误" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -571,7 +683,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2018 阿诗
+    		&copy; 2019 阿诗
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -654,6 +766,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">laravel</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Echarts</a>
               </li>
              
@@ -667,10 +783,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">github Desktop</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">laravel</a>
               </li>
              
               <li class="article-tag-list-item">
