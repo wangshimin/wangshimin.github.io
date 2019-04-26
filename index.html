@@ -206,9 +206,12 @@
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这时会发现数据表新建成功了，到这里我们该知道，<strong>实际开发的时候要注意这些</strong></p>
 <ol>
 <li><strong>每次数据库的变更</strong> (如：增加删减字段、字段属性修改、新增删除表)<strong>看成是一个新的版本，应当建立相应的迁移文件</strong></li>
-<li><strong>创建迁移文件时应使用–path选项指定路径</strong>（以版本号区分，便于回退至上版本，如v1、v1.1、v2、v3…等），如<br><code>php artisan migrate:make user_profiles --path=/database/migrations/v2</code></li>
+<li><strong>创建迁移文件时应使用–path选项指定路径</strong>（以版本号区分，便于回退至上版本，如v1、v1.1、v2、v3…等），如  </li>
+</ol>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan migrate:make user_profiles --path=/database/migrations/v2</span><br></pre></td></tr></table></figure>
+<ol start="3">
 <li><strong>迁移文件中的down方法记得完善，保证回滚迁移后再次执行迁移不会出错</strong></li>
-<li><strong>删除表可使用drop或dropIfExists方法</strong>    </li>
+<li><strong>删除表可使用drop或dropIfExists方法</strong>     </li>
 </ol>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">php artisan tinker </span><br><span class="line"></span><br><span class="line">Schema::drop(<span class="string">'user_profiles'</span>) 或 Schema::dropIfExists(<span class="string">'user_profiles'</span>)</span><br></pre></td></tr></table></figure>
 <ol start="5">
